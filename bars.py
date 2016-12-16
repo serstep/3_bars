@@ -79,7 +79,6 @@ if __name__ == '__main__':
 
     if biggest_bar is None or smallest_bar is None:
         print("Ошибка в поиске баров")
-        exit()
     else:
         print("Наибольший бар:" ,biggest_bar["Name"], "Количество мест:", biggest_bar["SeatsCount"])
         print("Наименьший бар:", smallest_bar["Name"], "Количество мест:", smallest_bar["SeatsCount"])
