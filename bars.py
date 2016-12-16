@@ -43,6 +43,9 @@ def get_closest_bar(data, longitude, latitude):
     return min(data, key=lambda bar: get_sphere_distance(float(bar["Longitude_WGS84"]),\
      float(bar["Latitude_WGS84"]), longitude, latitude), default=None)
 
+def check_coordinate_input(longitude, latitude):
+    if latitude < -90 or latitude > 90 or longitude < -180 or longitude > 180:
+        raise("Coordinate range mismatch")
 
 if __name__ == '__main__':
 
@@ -56,24 +59,8 @@ if __name__ == '__main__':
     try:
         bars_list = load_data(filepath)
     except:
-        print("Ошибка чтения" ,filepath)
+        print("Ошибка чтения", filepath)
         exit()
-
-
-    biggest_bar = get_biggest_bar(bars_list)
-    smallest_bar = get_smallest_bar(bars_list)
-
-    if biggest_bar is None:
-        print("Ошибка поиска наибольшего бара")
-        exit()
-    if smallest_bar is None:
-        print("Ошибка поиска наименьшего бара")
-        exit()
-
-
-    print("Наибольший бар:" ,biggest_bar["Name"], "Количество мест:", biggest_bar["SeatsCount"])
-    print("Наименьший бар:", smallest_bar["Name"], "Количество мест:", smallest_bar["SeatsCount"])
-
 
     user_latitude = 0
     user_longitude = 0
@@ -81,18 +68,21 @@ if __name__ == '__main__':
     try:
         user_latitude = float(input("Введите координату широты от -90 до +90 градусов"))
         user_longitude = float(input("Введите координату долготы от -180 до +180 градусов"))
-        if user_latitude < -90 or user_latitude > 90 or\
-         user_longitude < -180 or user_longitude > 180:
-            raise("Coordinate range mismatch")
+        check_coordinate_input(user_longitude, user_latitude)
     except:
         print("Неправильно указаны координаты")
         exit()
 
+    biggest_bar = get_biggest_bar(bars_list)
+    smallest_bar = get_smallest_bar(bars_list)
     closest_bar = get_closest_bar(bars_list, user_longitude, user_latitude)
 
-    if closest_bar is None:
-        print("Ошибка поиска ближайшего бара")
+    if biggest_bar is None or smallest_bar is None:
+        print("Ошибка в поиске баров")
         exit()
-
-    print("Ближайший бар:", closest_bar["Name"])
-    print("Удачной попойки!")
+    else:
+        print("Наибольший бар:" ,biggest_bar["Name"], "Количество мест:", biggest_bar["SeatsCount"])
+        print("Наименьший бар:", smallest_bar["Name"], "Количество мест:", smallest_bar["SeatsCount"])
+        print("Ближайший бар:", closest_bar["Name"])
+        print("Удачной попойки!")
+    
