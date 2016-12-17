@@ -25,10 +25,13 @@ def get_sphere_distance(longitude1, latitude1, longitude2, latitude2):
 
 
 def load_data(filepath):
-    bars_list = list()
-    with open(filepath) as file:
-        bars_list = json.loads(file.read())
-    return bars_list
+    try:
+        bars_list = list()
+        with open(filepath) as file:
+            bars_list = json.loads(file.read())
+        return bars_list
+    except:
+        return None
 
 
 def get_biggest_bar(data):
@@ -47,19 +50,29 @@ def check_coordinate_input(longitude, latitude):
     if latitude < -90 or latitude > 90 or longitude < -180 or longitude > 180:
         raise("Coordinate range mismatch")
 
+
+#Возвращает строку с искомыми барами
+def get_string_bars(bars_list, user_longitude, user_latitude):
+    biggest_bar = get_biggest_bar(bars_list)
+    smallest_bar = get_smallest_bar(bars_list)
+    closest_bar = get_closest_bar(bars_list, user_longitude, user_latitude)
+
+    result = ""
+    if biggest_bar is None or smallest_bar is None or closest_bar is None:
+        result = "Ошибка в поиске баров"
+    else:
+        result = "Наибольший бар: {} Количество мест: {}\nНаименьший бар: {} Количество мест: {}\nБлижайший бар: {} \nУдачной попойки!"\
+        .format(biggest_bar["Name"], biggest_bar["SeatsCount"], smallest_bar["Name"], smallest_bar["SeatsCount"], closest_bar["Name"])
+    return result
+
+
 if __name__ == '__main__':
 
-    if len(sys.argv) != 2:
-        print("Укажите путь к файлу с json записями в качестве единственного параметра")
-        exit()
+    filepath = ""
 
-    bars_list = list()
-    filepath = sys.argv[1]
-
-    try:
-        bars_list = load_data(filepath)
-    except:
-        print("Ошибка чтения", filepath)
+    bars_list = load_data(sys.argv[1])
+    if bars_list is None:
+        print("Ошибка чтения")
         exit()
 
     user_latitude = 0
@@ -73,15 +86,7 @@ if __name__ == '__main__':
         print("Неправильно указаны координаты")
         exit()
 
-    biggest_bar = get_biggest_bar(bars_list)
-    smallest_bar = get_smallest_bar(bars_list)
-    closest_bar = get_closest_bar(bars_list, user_longitude, user_latitude)
+    print(get_string_bars(bars_list, user_longitude, user_latitude))
 
-    if biggest_bar is None or smallest_bar is None:
-        print("Ошибка в поиске баров")
-    else:
-        print("Наибольший бар:" ,biggest_bar["Name"], "Количество мест:", biggest_bar["SeatsCount"])
-        print("Наименьший бар:", smallest_bar["Name"], "Количество мест:", smallest_bar["SeatsCount"])
-        print("Ближайший бар:", closest_bar["Name"])
-        print("Удачной попойки!")
+    
     
