@@ -9,7 +9,6 @@ import sys
 #поэтому проблему можно опустить. Расстояние считается в метрах.
 def get_sphere_distance(longitude1, latitude1, longitude2, latitude2):
     earth_radius = 6372795
-    half_equator_length = 20037848
 
     latitude1 *= math.pi / 180
     latitude2 *= math.pi / 180
@@ -68,8 +67,6 @@ def get_string_bars(bars_list, user_longitude, user_latitude):
 
 if __name__ == '__main__':
 
-    filepath = ""
-
     bars_list = load_data(sys.argv[1])
     if bars_list is None:
         print("Ошибка чтения")
@@ -77,7 +74,7 @@ if __name__ == '__main__':
 
     user_latitude = 0
     user_longitude = 0
-
+    
     try:
         user_latitude = float(input("Введите координату широты от -90 до +90 градусов"))
         user_longitude = float(input("Введите координату долготы от -180 до +180 градусов"))
