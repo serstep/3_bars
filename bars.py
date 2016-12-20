@@ -3,11 +3,14 @@ import math
 import sys
 
 
-#Расстояние между двумя точками на сфере расчитывается по формуле гаверсинусов
-#Формула некорректно считает расстояние между точками антиподами.
-#В данной задаче вероятность того, что точки окажутся антиподами небольшая,
-#поэтому проблему можно опустить. Расстояние считается в метрах.
+
 def get_sphere_distance(longitude1, latitude1, longitude2, latitude2):
+    """
+    Функция расчитывает расстояние между двумя точками на сфере по формуле гаверсинусов
+    Формула некорректно считает расстояние между точками антиподами.
+    В данной задаче вероятность того, что точки окажутся антиподами небольшая, поэтому проблему можно опустить.
+    Функция возвращает расстояние в метрах.
+    """
     earth_radius = 6372795
 
     latitude1 *= math.pi / 180
@@ -25,7 +28,6 @@ def get_sphere_distance(longitude1, latitude1, longitude2, latitude2):
 
 def load_data(filepath):
     try:
-        bars_list = list()
         with open(filepath) as file:
             bars_list = json.loads(file.read())
         return bars_list
@@ -47,7 +49,7 @@ def get_closest_bar(data, longitude, latitude):
 
 def check_coordinate_input(longitude, latitude):
     if latitude < -90 or latitude > 90 or longitude < -180 or longitude > 180:
-        raise("Coordinate range mismatch")
+        raise Exception("Coordinate range mismatch")
 
 
 #Возвращает строку с искомыми барами
@@ -56,7 +58,6 @@ def get_string_bars(bars_list, user_longitude, user_latitude):
     smallest_bar = get_smallest_bar(bars_list)
     closest_bar = get_closest_bar(bars_list, user_longitude, user_latitude)
 
-    result = ""
     if biggest_bar is None or smallest_bar is None or closest_bar is None:
         result = "Ошибка в поиске баров"
     else:
@@ -70,18 +71,15 @@ if __name__ == '__main__':
     bars_list = load_data(sys.argv[1])
     if bars_list is None:
         print("Ошибка чтения")
-        exit()
+        exit(1)
 
-    user_latitude = 0
-    user_longitude = 0
-    
     try:
         user_latitude = float(input("Введите координату широты от -90 до +90 градусов"))
         user_longitude = float(input("Введите координату долготы от -180 до +180 градусов"))
         check_coordinate_input(user_longitude, user_latitude)
     except:
         print("Неправильно указаны координаты")
-        exit()
+        exit(1)
 
     print(get_string_bars(bars_list, user_longitude, user_latitude))
 
